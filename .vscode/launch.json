@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "m-test - Dev",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/app_main.dart",
+            "flutterMode": "debug",
+            "args": ["--flavor", "dev", "--dart-define", "FLAVOUR_MODE=dev"]
+        },
+          {
+            "name": "m-test Release - Dev",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/app_main.dart",
+            "flutterMode": "release",
+            "args": ["--flavor", "dev", "--dart-define", "FLAVOUR_MODE=dev"]
+          },
+      
+          // prod config
+          {
+            "name": "m-test Debug - Prod",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/app_main.dart",
+            "flutterMode": "debug",
+            "args": ["--flavor", "prod", "--dart-define", "FLAVOUR_MODE=prod"]
+          },
+          {
+            "name": "m-test Release - Prod",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/app_main.dart",
+            "flutterMode": "release",
+            "args": ["--flavor", "prod", "--dart-define", "FLAVOUR_MODE=prod"]
+          }
+    ]
+}
