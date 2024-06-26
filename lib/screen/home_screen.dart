@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:app/controller/user/bloc/user_bloc.dart';
+import 'package:app/mixin/app_util.dart';
+import 'package:app/style/m_button.dart';
+import 'package:app/style/m_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,10 +14,12 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with AppUtil {
   late UserBloc _userBloc;
   late ScrollController _scrollController;
   late Completer<void> _refreshCompleter;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _jobController = TextEditingController();
 
   @override
   void initState() {
@@ -28,6 +33,19 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     _refreshCompleter = Completer<void>();
     _userBloc.add(const UserEventLoadList());
+    _nameController.addListener(() {
+      _userBloc.add(UserEventAddField(name: _nameController.text.trim()));
+    });
+    _jobController.addListener(() {
+      _userBloc.add(UserEventAddField(job: _jobController.text.trim()));
+    });
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _jobController.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,6 +75,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   _refreshCompleter.complete();
                   _refreshCompleter = Completer<void>();
                 }
+              } else if (state is UserStateAddSuccess) {
+                _showDialog(
+                  message: localize('add_user_success_dialog_title'),
+                  isBack: true,
+                );
+              } else if (state is UserStateListError) {
+                _showDialog(message: state.message);
+              } else if (state is UserStateAddError) {
+                _showDialog(message: state.message);
               }
             },
             builder: (context, state) {
@@ -112,12 +139,97 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _showDialog({
+    required String message,
+    bool isBack = false,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: Text(
+              message,
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((_) {
+      if (isBack) {
+        popPage(context);
+      }
+    });
+  }
+
   void _showModalBottomSheet() {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Container();
+        return BlocProvider.value(
+          value: _userBloc,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 14.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MForm(
+                  controller: _nameController,
+                  label: const Text(
+                    'name',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                MForm(
+                  controller: _jobController,
+                  label: const Text(
+                    'job',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                SizedBox(
+                  width: double.infinity,
+                  child: BlocBuilder<UserBloc, UserState>(
+                    buildWhen: (_, current) => current is UserStateFieldChecked,
+                    builder: (context, state) {
+                      final isChecked = state is UserStateFieldChecked && state.isChecked;
+                      return MButton(
+                        onPressed: !isChecked
+                            ? null
+                            : () {
+                                _userBloc.add(UserEventAddRequest());
+                              },
+                        backgroundColor: !isChecked ? Colors.grey : Colors.purple[400],
+                        label: Text(
+                          localize('add_user_title_button'),
+                          style: TextStyle(
+                            color: !isChecked ? Colors.black : Colors.white,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
       },
-    );
+    ).then((_) {
+      _nameController.clear();
+      _jobController.clear();
+    });
   }
 }

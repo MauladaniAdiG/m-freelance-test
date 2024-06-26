@@ -34,8 +34,8 @@ class ApiDataResponse {
     }
     final Map<String, dynamic> map = json.decode(data);
     final statusType = ApiStatusTypeExtension.fromString(map['status']);
-    final message = map['message'];
-    final convertDataBody = fromJsonModel == null ? _defaultModel(map) : fromJsonModel(map['data']);
+    final message = map['message'] ?? '';
+    final convertDataBody = fromJsonModel == null ? _defaultModel(map) : fromJsonModel(map['data'] ?? map);
     return ApiDataResponse(
       statusCode: statusCode,
       result: convertDataBody,

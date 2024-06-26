@@ -27,3 +27,27 @@ final class UserStateListError extends UserState {
   @override
   List<Object> get props => [message, timestamp];
 }
+
+final class UserStateFieldChecked extends UserState {
+  final bool isChecked;
+  const UserStateFieldChecked({this.isChecked = false});
+  @override
+  List<Object> get props => [isChecked];
+}
+
+final class UserStateAddSuccess extends UserState {
+  final int timestamp;
+  UserStateAddSuccess() : timestamp = DateTime.now().millisecondsSinceEpoch;
+
+  @override
+  List<Object> get props => [timestamp];
+}
+
+final class UserStateAddError extends UserState {
+  final String message;
+  final int timestamp;
+  UserStateAddError(this.message) : timestamp = DateTime.now().millisecondsSinceEpoch;
+
+  @override
+  List<Object> get props => [message, timestamp];
+}

@@ -12,15 +12,17 @@ class UserListResponse extends ResponseModelList {
 }
 
 class UserResponse extends ResponseModelMap {
-  int id;
+  String id;
   String email;
   String firstName;
   String lastName;
+  String name;
   UserResponse({
-    this.id = -1,
+    this.id = '',
     this.email = '',
     this.firstName = '',
     this.lastName = '',
+    this.name = '',
   });
 
   @override
@@ -28,10 +30,11 @@ class UserResponse extends ResponseModelMap {
 
   factory UserResponse.fromJson(Map<String, dynamic> json) {
     return UserResponse(
-      id: json['id'] ?? -1,
+      id: json['id'].toString(),
       email: json['email'] ?? '',
       firstName: json['first_name'] ?? '',
       lastName: json['last_name'] ?? '',
+      name: json['name'] ?? '',
     );
   }
 }
