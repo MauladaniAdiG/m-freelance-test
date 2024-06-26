@@ -51,6 +51,22 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+
+    flavorDimensions "environment"
+
+    productFlavors{
+        dev{
+            dimension "environment"
+            manifestPlaceholders = [appName:"m-test [DEV]"]
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+
+        prod{
+            dimension "environment"
+            manifestPlaceholders = [appName: "m-test"]
+        }
+    }
 }
 
 flutter {
