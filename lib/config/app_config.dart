@@ -40,10 +40,10 @@ class _Config {
   static const String baseUrl = 'baseUrl';
 
   static Map<String, dynamic> dev = {
-    baseUrl: 'http://127.0.0.1:8000/v1',
+    baseUrl: 'https://reqres.in/api',
   };
 
   static Map<String, dynamic> prod = {
-    baseUrl: 'http://127.0.0.1:8000/v1',
+    baseUrl: 'https://reqres.in/api',
   };
 }
